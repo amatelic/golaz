@@ -1,15 +1,16 @@
 {
   "name": "block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll "
   },
   "keywords": [],
-  "author": "",
+  "author": "Anže Matelic<amatelic93@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "jest": "^24.9.0"
-  }
+  },
+  "dependencies": {}
 }
