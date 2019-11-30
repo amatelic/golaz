@@ -1,4 +1,4 @@
-const { pipe, input } = require('../index');
+const { pipe, input, identity } = require('../index');
 
 test('check if pipe is working correctly', () => {
     const mut = (a) => (b) => b * a;
@@ -9,19 +9,48 @@ test('check if pipe is working correctly', () => {
     expect(pipe(ident(3), mut(5))).toEqual(15)
 });
 
-test('Generate http config file', () => {
-    const mut = (a) => (b) => b * a;
-    const ident = (a) => a;
+test('Generate http config file', async () => {
+  try {
+    const response = await pipe(
+      input('htttp://example.com'), identity()
+    );
 
-    const errorObj = {
-        myError: {
-          name: 'INCORRECT URL TYPE',
-          desc: 'The "url" argument must be of type string. Received type undefinedTypeError [ERR_INVALID_ARG_TYPE]: The "url" argument must be of type string. Received type undefined'
-        }
-      };
-    
+    expect(response.type).toEqual("input");
+    expect(response.options).toEqual({
+      "auth": null,
+      "hash": null,
+      "host": "example.com",
+      "hostname": "example.com",
+      "href": "htttp://example.com",
+      "path": null,
+      "pathname": null,
+      "port": null,
+      "protocol": "htttp:",
+      "query": null,
+      "search": null,
+      "slashes": true,
+    });
+    expect(response).toMatchSnapshot();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+});
 
-    expect(() => pipe(input)).toThrowError("Provided value is not a valid url string");
+
+test('Input expect error', async () => {
+
+  let error;
+  try {
+    const response = await pipe(
+      input(), identity()
+    );
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toEqual('Provided value is not a valid url string');
+
 
     // expect(pipe(input)).toEqual(10);
     // expect(pipe(ident(3), mut(5))).toEqual(15)

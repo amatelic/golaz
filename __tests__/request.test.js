@@ -1,44 +1,39 @@
-const { pipe, input, text, body, get } = require('../index');
+const { pipe, input, text, body, timeout, get } = require('../index');
+const { agent } = require('./assets');
 
+describe("Test if all request options return correct result", () => {
+    test('throw if server is not running', async () => {
 
-const agent = (promise) => {
-    let server;
-    return (new Promise((resolve, reject) => {
-        const http = require('http');
-
-        server = http.createServer((req, res) => {
+        const instance = agent((req, res) => {
+            // console.log(res.end)
             res.end('this is working');
-            resolve('this is working')
         });
-    
-        server.listen(5000); 
-    }))
-    .then(promise)
-    .then(value => {
-        server.close();
-        return value;
-    })
-    .catch(err => {
-        console.log(err);
-    })
-}
 
-test('throw if server is not running', async () => {
-    await expect(
-        agent(
+        const value = await Promise.all([
+                instance.listen(6000),
+                pipe(
+                    pipe(input('http://localhost:6000'), get()),
+                    text()
+                ) 
+            ])
+            .then(([_, value]) => {
+                return instance.close()
+                    .then(_ => value)
+            });
+
+        console.log(value)
+
+        expect(value).toBe('this is working');
+        
+    });
+
+    test('should throw error if server is not running', async () => {
+        await expect(
             pipe(
                 pipe(input('http://localhost:5000'), get()),
+                timeout(300),
                 text()
             )
-        )
-    ).resolves.toBe('this is working');
-});
-
-test('should return resposne', async () => {
-    await expect(
-        pipe(
-            pipe(input('http://localhost:5000'), get()),
-            text()
-        )
-    ).rejects.toThrow('connect ECONNREFUSED 127.0.0.1:5000');
+        ).rejects.toThrow('connect ECONNREFUSED 127.0.0.1:5000');
+    });   
 });
