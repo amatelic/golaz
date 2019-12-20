@@ -1,3 +1,10 @@
+describe('neede because of error if not provided', () => {
+    // Should fail, but isn't even run
+    test.skip('my only true test', () => {
+      expect(1 + 1).toEqual(1);
+    });
+  });
+
 const agent = (callback) => {
 
     const server = require('http').createServer(callback);
