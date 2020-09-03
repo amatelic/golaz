@@ -7,7 +7,7 @@
     "test": "jest --watchAll --runInBand"
   },
   "keywords": [],
-  "author": "Anže Matelic<amatelic93@gmail.com>",
+  "author": "Anže Matelic<anze.matelic@gdo-studio.si>",
   "license": "ISC",
   "devDependencies": {
     "jest": "^24.9.0"

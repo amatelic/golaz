@@ -22,7 +22,6 @@ test('Generate http config file', async () => {
       input('htttp://example.com'), identity()
     );
 
-    console.log(response);
     expect(response.type).toEqual("input");
     expect(response.options).toEqual({
       "auth": null,
